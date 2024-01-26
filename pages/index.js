@@ -33,7 +33,7 @@ export default function Home() {
   const [timer, setTimer] = useState("");
 
   useEffect(() => {
-    const asked = localStorage.getItem("questionAsked");
+    const asked = localStorage.getItem("questionAskedd");
     const link = localStorage.getItem("castLink");
 
     if (asked) {
@@ -82,7 +82,7 @@ export default function Home() {
       console.log(
         "it was successful. if you are reading this, please help me make this website cooler for each week"
       );
-      localStorage.setItem("questionAsked", question);
+      localStorage.setItem("questionAskedd", question);
       localStorage.setItem(
         "castLink",
         `https://warpcast.com/${
