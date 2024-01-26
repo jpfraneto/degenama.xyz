@@ -24,6 +24,10 @@ h2 {
   color: #37BCF8
 }
 
+p {
+  color: rgb(139, 92, 246)
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

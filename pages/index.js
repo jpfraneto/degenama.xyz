@@ -26,10 +26,17 @@ export default function Home() {
   const [thereWasAnError, setThereWasAnError] = useState(false);
   const [askingTheQuestionStatus, setAskingTheQuestionStatus] = useState(false);
   const [weHaveResponse, setWeHaveResponse] = useState(false);
+  const [twitterUsername, setTwitterUsername] = useState("");
+  const [questionAsked, setQuestionAsked] = useState(false);
   const [castResponse, setCastResponse] = useState({});
   const [timer, setTimer] = useState("");
 
   useEffect(() => {
+    const asked = localStorage.getItem("questionAsked");
+    if (asked) {
+      setQuestionAsked(true);
+      setQuestion(asked); // Load the saved question
+    }
     const targetTime = new Date("January 26, 2024 14:00:00 EST").getTime();
 
     const interval = setInterval(() => {
@@ -55,8 +62,10 @@ export default function Home() {
   }, []);
   async function askTheQuestion() {
     try {
+      if (questionAsked) return alert("you already asked a question");
       if (!question || question?.length === 0)
         return alert("please ask a question");
+      if (!twitterUsername) return alert("please add a twitter username");
       if (question.length > 280) return alert("please be more concise");
       setAskingTheQuestionStatus(true);
       console.log("sending the question...");
@@ -64,12 +73,14 @@ export default function Home() {
       console.log(
         "it was successful. if you are reading this, please help me make this website cooler for each week"
       );
+      localStorage.setItem("questionAsked", question);
       setCastResponse(response.data.cast);
       setAskingTheQuestionStatus(false);
       setWeHaveResponse(true);
     } catch (error) {
       console.log("there was an error");
       setThereWasAnError(true);
+      setAskingTheQuestionStatus(false);
     }
   }
   return (
@@ -87,7 +98,7 @@ export default function Home() {
       </div>
       <div className="h-3/5 w-full  mx-auto">
         {weHaveResponse ? (
-          <div className="h-full w-4/5">
+          <div className="h-full w-4/5 mx-auto">
             <p className="mt-12">your question was asked</p>
             <div className="h-fit my-4">
               <a
@@ -95,15 +106,15 @@ export default function Home() {
                 href={`https://warpcast.com/${
                   castResponse.author.username
                 }/${castResponse.hash.substring(0, 10)}`}
-                className={`p-2 border-2 border-black rounded-xl bg-purple-600 text-yellow`}
+                className={`p-2 text-2xl border-2 border-black rounded-xl bg-purple-600 text-yellow`}
               >
                 open in warpcast
               </a>
             </div>
 
             <p>
-              NOTE: the cast may take a while to appear in warpcast. patience.
-              we are all in line.
+              NOTE: the cast may take a while to appear. patience. we are all in
+              line.
             </p>
           </div>
         ) : (
@@ -127,21 +138,31 @@ export default function Home() {
                 >
                   {question.length}/320
                 </span>
-                <button
-                  disabled={question.length === 0}
-                  onClick={askTheQuestion}
-                  className={`${
-                    question?.length > 0
-                      ? "bg-purple-500 shadow-lg shadow-black shadow-yellow-600"
-                      : "bg-purple-300 "
-                  } border-black w-48 mr-auto p-2 rounded-xl border-2 mx-auto text-black mt-4`}
-                >
-                  {askingTheQuestionStatus
-                    ? "broadcasting..."
-                    : question?.length > 0
-                    ? "ask anon"
-                    : "start writing..."}
-                </button>
+                <p className="my-2">
+                  twitter username (to win the special box)
+                </p>
+                <input
+                  className="p-2 rounded-xl"
+                  onChange={(e) => setTwitterUsername(e.target.value)}
+                  placeholder="@deezee"
+                />
+                {question?.length > 0 && twitterUsername.length > 0 && (
+                  <button
+                    disabled={question.length === 0}
+                    onClick={askTheQuestion}
+                    className={`${
+                      question?.length > 0
+                        ? "bg-purple-500 shadow-lg shadow-black shadow-yellow-600"
+                        : "bg-purple-300 "
+                    } border-black w-48 mr-auto p-2 rounded-xl border-2 mx-auto text-black mt-4`}
+                  >
+                    {askingTheQuestionStatus
+                      ? "broadcasting..."
+                      : question?.length > 0
+                      ? "ask anon"
+                      : "submit"}
+                  </button>
+                )}
               </div>
             </div>
             <div className="mt-4 w-3/4 bg mx-auto">
