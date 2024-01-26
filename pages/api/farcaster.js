@@ -19,7 +19,7 @@ export default async function handler(req, res) {
       if (existingEntry) {
         return res
           .status(429)
-          .json({ error: "You have already submitted a question." });
+          .json({ error: "you already submitted a question." });
       }
 
       const response = await fetch("https://api.neynar.com/v2/farcaster/cast", {
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
         if (err.code === "P2002") {
           // This is the error code for a unique constraint violation in Prisma
           return res.status(400).json({
-            error: "This Twitter username has already submitted a question.",
+            error: "this twitter username is already participating",
           });
         }
         throw err;

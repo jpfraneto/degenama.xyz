@@ -132,7 +132,7 @@ export default function Home() {
     );
   return (
     <div
-      className={`${proto.className} w-96 pt-4 mx-auto h-screen  flex flex-col mt-8`}
+      className={`${proto.className} w-96 pt-2 mx-auto h-screen  flex flex-col mt-4`}
     >
       {weHaveResponse && <Fireworks autorun={{ speed: 3 }} />}
       <div className="mb-3 w-8/12 mx-auto">
@@ -212,7 +212,7 @@ export default function Home() {
                 )}
               </div>
             </div>
-            <div className="mt-4 w-3/4 bg mx-auto">
+            <div className="mt-4 w-3/4 mb-8 bg mx-auto">
               {thereWasAnError && (
                 <p className="text-red-600 text-sm">{thereWasAnError}</p>
               )}
