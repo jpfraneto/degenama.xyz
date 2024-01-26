@@ -170,7 +170,7 @@ export default function Home() {
               <div className="flex flex-col mt-2 w-5/6 mx-auto">
                 <textarea
                   onChange={(e) => setQuestion(e.target.value)}
-                  className="p-2 rounded-xl text-black w-full h-48"
+                  className="p-2 rounded-xl text-black w-full h-32"
                   placeholder="write here..."
                   value={question}
                 />
@@ -182,7 +182,7 @@ export default function Home() {
                   {question.length}/320
                 </span>
                 <p className="my-2">
-                  twitter username (to win the special box)
+                  twitter address (to send you the special box)
                 </p>
                 <input
                   className="p-2 rounded-xl"
