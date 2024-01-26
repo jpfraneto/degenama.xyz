@@ -50,13 +50,13 @@ export default async function handler(req, res) {
           },
         });
       } catch (error) {
-        if (err.code === "P2002") {
+        if (error.code === "P2002") {
           // This is the error code for a unique constraint violation in Prisma
           return res.status(400).json({
             error: "this twitter username is already participating",
           });
         }
-        throw err;
+        throw error;
       }
       await prisma.requestLog.create({
         data: {
