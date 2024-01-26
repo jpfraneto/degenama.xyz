@@ -117,11 +117,11 @@ export default function Home() {
         <h2 className="w-full mx-auto text-center text-3xl">
           you already asked
         </h2>
-        <p className="my-2 text-center">{question}</p>
+        <p className="my-2 text-xl text-center">{question}</p>
         {castLink && (
           <a
             target="_blank"
-            className={`p-2 text-2xl border-2 border-black rounded-xl bg-purple-600 text-yellow`}
+            className={`p-2 text-2xl border-2 border-black rounded-xl w-fit mx-auto bg-purple-600 text-yellow`}
             href={castLink}
           >
             open in warpcast
@@ -166,7 +166,7 @@ export default function Home() {
         ) : (
           <>
             <h2 className="w-full mx-auto text-center text-3xl">
-              ask dan anything
+              ask jacek anything
             </h2>
 
             <div>
