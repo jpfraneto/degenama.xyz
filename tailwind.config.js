@@ -14,5 +14,10 @@ module.exports = {
       },
     },
   },
+  extend: {
+    fontFamily: {
+      sans: ["var(--font-proto)"],
+    },
+  },
   plugins: [],
 };

@@ -1,10 +1,25 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import { useState, useEffect } from "react";
+import localFont from "next/font/local";
 import axios from "axios";
 import Fireworks from "react-canvas-confetti/dist/presets/fireworks";
 
 const inter = Inter({ subsets: ["latin"] });
+const proto = localFont({
+  src: [
+    {
+      path: "../public/fonts/proto/ProtoMono-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/proto/ProtoMono-SemiBold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+});
 
 export default function Home() {
   const [question, setQuestion] = useState("");
@@ -27,7 +42,7 @@ export default function Home() {
       );
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
+      console.log("the timer is: ", timer);
       setTimer(`${days}d ${hours}h ${minutes}m ${seconds}s`);
 
       if (distance < 0) {
@@ -40,12 +55,15 @@ export default function Home() {
   }, []);
   async function askTheQuestion() {
     try {
-      if (!question || question.length === 0)
+      if (!question || question?.length === 0)
         return alert("please ask a question");
+      if (question.length > 280) return alert("please be more concise");
       setAskingTheQuestionStatus(true);
-      console.log("asking the question");
+      console.log("sending the question...");
       const response = await axios.post("/api/farcaster", { prompt: question });
-      console.log("the response is: ", response.data);
+      console.log(
+        "it was successful. if you are reading this, please help me make this website cooler for each week"
+      );
       setCastResponse(response.data.cast);
       setAskingTheQuestionStatus(false);
       setWeHaveResponse(true);
@@ -55,19 +73,21 @@ export default function Home() {
     }
   }
   return (
-    <div className="w-96 pt-8 mx-auto h-screen  flex flex-col">
+    <div
+      className={`${proto.className} w-96 pt-8 mx-auto h-screen  flex flex-col`}
+    >
       {weHaveResponse && <Fireworks autorun={{ speed: 3 }} />}
-      <div className="h-2/5 w-4/5   mx-auto">
+      <div className="h-2/5 w-4/5  mx-auto">
         <div className="w-full aspect-square relative rounded-xl overflow-hidden">
-          <Image src={`/images/jacek.jpg`} layout="fill" />
+          <Image src={`/images/jacek.jpeg`} layout="fill" />
           <div className="absolute top-0 right-0 bg-black text-white p-2">
             {timer}
           </div>
         </div>
       </div>
-      <div className="h-3/5 w-3/4  mx-auto">
+      <div className="h-3/5 w-full  mx-auto">
         {weHaveResponse ? (
-          <div className="h-full ">
+          <div className="h-full w-4/5">
             <p className="mt-12">your question was asked</p>
             <div className="h-fit my-4">
               <a
@@ -87,27 +107,38 @@ export default function Home() {
             </p>
           </div>
         ) : (
-          <div className="mt-12">
-            <p className="w-3/4 mx-auto text-center">ask jacek something</p>
+          <div className="">
+            <h2 className="w-full mx-auto text-center text-3xl">
+              ask jacek anything
+            </h2>
 
             <div>
-              <div className="flex flex-col  mt-4 w-3/4 mx-auto">
+              <div className="flex flex-col mt-4 w-5/6 mx-auto">
                 <textarea
                   onChange={(e) => setQuestion(e.target.value)}
-                  className="p-2 rounded-xl text-black w-full h-24"
+                  className="p-2 rounded-xl text-black w-full h-48"
                   placeholder="write here..."
+                  value={question}
                 />
+                <span
+                  className={`${
+                    question.length > 320 ? "text-red-500" : "text-white"
+                  } mt-1`}
+                >
+                  {question.length}/320
+                </span>
                 <button
+                  disabled={question.length === 0}
                   onClick={askTheQuestion}
                   className={`${
-                    question.length > 0
-                      ? "bg-purple-500 shadow-lg shadow-black hover:shadow-yellow-600"
+                    question?.length > 0
+                      ? "bg-purple-500 shadow-lg shadow-black shadow-yellow-600"
                       : "bg-purple-300 "
                   } border-black w-48 mr-auto p-2 rounded-xl border-2 mx-auto text-black mt-4`}
                 >
                   {askingTheQuestionStatus
                     ? "broadcasting..."
-                    : question.length > 0
+                    : question?.length > 0
                     ? "ask anon"
                     : "start writing..."}
                 </button>
