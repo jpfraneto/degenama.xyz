@@ -1,8 +1,27 @@
 const prisma = require("../../lib/prismaClient");
 
 export default async function handler(req, res) {
+  const clientIp =
+    req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+
   if (req.method === "POST") {
     try {
+      let savedQuestion;
+      const existingEntry = await prisma.requestLog.findFirst({
+        where: {
+          ip: clientIp,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      if (existingEntry) {
+        return res
+          .status(429)
+          .json({ error: "You have already submitted a question." });
+      }
+
       const response = await fetch("https://api.neynar.com/v2/farcaster/cast", {
         method: "POST",
         headers: {
@@ -22,23 +41,39 @@ export default async function handler(req, res) {
       }
 
       const data = await response.json();
-      const savedQuestion = await prisma.question.create({
+      try {
+        savedQuestion = await prisma.question.create({
+          data: {
+            question: req.body.prompt,
+            twitterUsername: req.body.twitterUsername, // Assuming you send this from frontend
+            castHash: data.cast.hash, // Adjust based on actual response structure
+          },
+        });
+      } catch (error) {
+        if (err.code === "P2002") {
+          // This is the error code for a unique constraint violation in Prisma
+          return res.status(400).json({
+            error: "This Twitter username has already submitted a question.",
+          });
+        }
+        throw err;
+      }
+      await prisma.requestLog.create({
         data: {
-          question: req.body.prompt,
-          twitterUsername: req.body.twitterUsername, // Assuming you send this from frontend
-          castHash: data.cast.hash, // Adjust based on actual response structure
+          ip: clientIp,
         },
       });
       console.log("the question was saved", savedQuestion);
       res.status(200).json({ cast: data.cast });
     } catch (error) {
       // Handle errors from the fetch operation
+
       console.error("Fetch error:", error.message);
       res.status(500).json({ error: error.message });
     }
   } else {
     // Handle any other HTTP methods if necessary
-    res.setHeader("Allow", ["POST"]); // Ensure you set the 'Allow' header to 'POST' since that's the method you're accepting
+    res.setHeader("Allow", ["POST"]); // Ensure you set the 'Allow' header to 'POST'
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

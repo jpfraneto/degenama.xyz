@@ -23,7 +23,7 @@ const proto = localFont({
 
 export default function Home() {
   const [question, setQuestion] = useState("");
-  const [thereWasAnError, setThereWasAnError] = useState(false);
+  const [thereWasAnError, setThereWasAnError] = useState("");
   const [askingTheQuestionStatus, setAskingTheQuestionStatus] = useState(false);
   const [weHaveResponse, setWeHaveResponse] = useState(false);
   const [castLink, setCastLink] = useState("");
@@ -94,8 +94,7 @@ export default function Home() {
       setAskingTheQuestionStatus(false);
       setWeHaveResponse(true);
     } catch (error) {
-      console.log("there was an error");
-      setThereWasAnError(true);
+      setThereWasAnError(error);
       setAskingTheQuestionStatus(false);
     }
   }
@@ -213,7 +212,7 @@ export default function Home() {
             </div>
             <div className="mt-4 w-3/4 bg mx-auto">
               {thereWasAnError && (
-                <p className="text-red-600 text-sm">oops, there was an error</p>
+                <p className="text-red-600 text-sm">{thereWasAnError}</p>
               )}
             </div>
           </>

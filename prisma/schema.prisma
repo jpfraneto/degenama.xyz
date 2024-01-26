@@ -14,6 +14,12 @@ model Question {
   id                Int                           @id @default(autoincrement())
   createdAt         DateTime @default(now())
   question          String   
-  twitterUsername   String?
+  twitterUsername   String?   @unique
   castHash          String
+}
+
+model RequestLog {
+  id        Int      @id @default(autoincrement())
+  ip        String   
+  createdAt DateTime @default(now())
 }
