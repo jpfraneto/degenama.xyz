@@ -159,7 +159,7 @@ export default function Home() {
         ) : (
           <>
             <h2 className="w-full mx-auto text-center text-3xl">
-              ask jacek anything
+              ask dan anything
             </h2>
 
             <div>
