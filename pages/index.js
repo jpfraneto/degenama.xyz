@@ -94,7 +94,9 @@ export default function Home() {
       setAskingTheQuestionStatus(false);
       setWeHaveResponse(true);
     } catch (error) {
-      setThereWasAnError(error);
+      setThereWasAnError(
+        error?.response?.data?.error || "there was an unknown error"
+      );
       setAskingTheQuestionStatus(false);
     }
   }
