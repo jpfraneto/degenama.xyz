@@ -26,6 +26,7 @@ export default function Home() {
   const [thereWasAnError, setThereWasAnError] = useState(false);
   const [askingTheQuestionStatus, setAskingTheQuestionStatus] = useState(false);
   const [weHaveResponse, setWeHaveResponse] = useState(false);
+  const [castLink, setCastLink] = useState("");
   const [twitterUsername, setTwitterUsername] = useState("");
   const [questionAsked, setQuestionAsked] = useState(false);
   const [castResponse, setCastResponse] = useState({});
@@ -33,9 +34,14 @@ export default function Home() {
 
   useEffect(() => {
     const asked = localStorage.getItem("questionAsked");
+    const link = localStorage.getItem("castLink");
+
     if (asked) {
       setQuestionAsked(true);
       setQuestion(asked); // Load the saved question
+      if (link) {
+        setCastLink(link);
+      }
     }
     const targetTime = new Date("January 26, 2024 14:00:00 EST").getTime();
 
@@ -74,6 +80,13 @@ export default function Home() {
         "it was successful. if you are reading this, please help me make this website cooler for each week"
       );
       localStorage.setItem("questionAsked", question);
+      localStorage.setItem(
+        "castLink",
+        `https://warpcast.com/${
+          response.data.cast.author.username
+        }/${response.data.cast.hash.substring(0, 10)}`
+      );
+
       setCastResponse(response.data.cast);
       setAskingTheQuestionStatus(false);
       setWeHaveResponse(true);
@@ -83,12 +96,38 @@ export default function Home() {
       setAskingTheQuestionStatus(false);
     }
   }
+  if (questionAsked)
+    return (
+      <div
+        className={`${proto.className} w-96 pt-4 mx-auto h-screen  flex flex-col`}
+      >
+        {weHaveResponse && <Fireworks autorun={{ speed: 3 }} />}
+        <div className="mb-3 w-8/12 mx-auto">
+          <div className="w-full aspect-square relative rounded-xl overflow-hidden">
+            <Image src={`/images/jacek.jpeg`} layout="fill" />
+            <div className="absolute top-0 right-0 bg-black text-white p-2">
+              {timer}
+            </div>
+          </div>
+        </div>
+
+        <h2 className="w-full mx-auto text-center text-3xl">
+          you already asked
+        </h2>
+        <p className="my-2 text-center">{question}</p>
+        {castLink && (
+          <a target="_blank" href={castLink}>
+            open in warpcast
+          </a>
+        )}
+      </div>
+    );
   return (
     <div
-      className={`${proto.className} w-96 pt-8 mx-auto h-screen  flex flex-col`}
+      className={`${proto.className} w-96 pt-4 mx-auto h-screen  flex flex-col`}
     >
       {weHaveResponse && <Fireworks autorun={{ speed: 3 }} />}
-      <div className="h-2/5 w-4/5  mx-auto">
+      <div className="mb-3 w-8/12 mx-auto">
         <div className="w-full aspect-square relative rounded-xl overflow-hidden">
           <Image src={`/images/jacek.jpeg`} layout="fill" />
           <div className="absolute top-0 right-0 bg-black text-white p-2">
@@ -99,7 +138,7 @@ export default function Home() {
       <div className="h-3/5 w-full  mx-auto">
         {weHaveResponse ? (
           <div className="h-full w-4/5 mx-auto">
-            <p className="mt-12">your question was asked</p>
+            <p className="mt-4">your question was asked</p>
             <div className="h-fit my-4">
               <a
                 target="_blank"
@@ -118,13 +157,13 @@ export default function Home() {
             </p>
           </div>
         ) : (
-          <div className="">
+          <>
             <h2 className="w-full mx-auto text-center text-3xl">
               ask jacek anything
             </h2>
 
             <div>
-              <div className="flex flex-col mt-4 w-5/6 mx-auto">
+              <div className="flex flex-col mt-2 w-5/6 mx-auto">
                 <textarea
                   onChange={(e) => setQuestion(e.target.value)}
                   className="p-2 rounded-xl text-black w-full h-48"
@@ -152,7 +191,7 @@ export default function Home() {
                     onClick={askTheQuestion}
                     className={`${
                       question?.length > 0
-                        ? "bg-purple-500 shadow-lg shadow-black shadow-yellow-600"
+                        ? "bg-purple-500 shadow-lg shadow-black shadow-yellow-600 hover:bg-purple-600"
                         : "bg-purple-300 "
                     } border-black w-48 mr-auto p-2 rounded-xl border-2 mx-auto text-black mt-4`}
                   >
@@ -170,7 +209,7 @@ export default function Home() {
                 <p className="text-red-600 text-sm">oops, there was an error</p>
               )}
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>
