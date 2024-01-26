@@ -75,7 +75,10 @@ export default function Home() {
       if (question.length > 280) return alert("please be more concise");
       setAskingTheQuestionStatus(true);
       console.log("sending the question...");
-      const response = await axios.post("/api/farcaster", { prompt: question });
+      const response = await axios.post("/api/farcaster", {
+        prompt: question,
+        twitterUsername: twitterUsername,
+      });
       console.log(
         "it was successful. if you are reading this, please help me make this website cooler for each week"
       );
@@ -104,7 +107,7 @@ export default function Home() {
         {weHaveResponse && <Fireworks autorun={{ speed: 3 }} />}
         <div className="mb-3 w-8/12 mx-auto">
           <div className="w-full aspect-square relative rounded-xl overflow-hidden">
-            <Image src={`/images/dwr.png`} layout="fill" />
+            <Image src={`/images/jacek.jpeg`} layout="fill" />
             <div className="absolute top-0 right-0 bg-black text-white p-2">
               {timer}
             </div>
@@ -128,12 +131,12 @@ export default function Home() {
     );
   return (
     <div
-      className={`${proto.className} w-96 pt-4 mx-auto h-screen  flex flex-col`}
+      className={`${proto.className} w-96 pt-4 mx-auto h-screen  flex flex-col mt-8`}
     >
       {weHaveResponse && <Fireworks autorun={{ speed: 3 }} />}
       <div className="mb-3 w-8/12 mx-auto">
         <div className="w-full aspect-square relative rounded-xl overflow-hidden">
-          <Image src={`/images/dwr.png`} layout="fill" />
+          <Image src={`/images/jacek.jpeg`} layout="fill" />
           <div className="absolute top-0 right-0 bg-black text-white p-2">
             {timer}
           </div>

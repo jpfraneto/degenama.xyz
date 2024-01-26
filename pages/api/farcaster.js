@@ -1,3 +1,5 @@
+const prisma = require("../../lib/prismaClient");
+
 export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
@@ -20,7 +22,14 @@ export default async function handler(req, res) {
       }
 
       const data = await response.json();
-      console.log("the response from casting is: ", data);
+      const savedQuestion = await prisma.question.create({
+        data: {
+          question: req.body.prompt,
+          twitterUsername: req.body.twitterUsername, // Assuming you send this from frontend
+          castHash: data.cast.hash, // Adjust based on actual response structure
+        },
+      });
+      console.log("the question was saved", savedQuestion);
       res.status(200).json({ cast: data.cast });
     } catch (error) {
       // Handle errors from the fetch operation
