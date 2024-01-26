@@ -129,7 +129,7 @@ export default function Home() {
       {weHaveResponse && <Fireworks autorun={{ speed: 3 }} />}
       <div className="mb-3 w-8/12 mx-auto">
         <div className="w-full aspect-square relative rounded-xl overflow-hidden">
-          <Image src={`/images/jacek.jpeg`} layout="fill" />
+          <Image src={`/images/dwr.png`} layout="fill" />
           <div className="absolute top-0 right-0 bg-black text-white p-2">
             {timer}
           </div>
